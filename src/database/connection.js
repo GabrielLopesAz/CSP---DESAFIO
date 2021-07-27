@@ -15,7 +15,6 @@ var knex = require('knex')({
         t.string('PRIMEIRONOME', 20);
         t.string('ULTIMONOME', 20);
         t.string('EMAIL', 50);
-        t.unique('EMAIL');
       });
     }
   });

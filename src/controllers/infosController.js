@@ -1,18 +1,23 @@
 const knex = require("../database/connection")
 const Informacoes = require("../models/Informacoes")
-const Telefone = require("../models/Telefone")
+const Telefones = require("../models/Telefone")
 
 class InfosController {
 
   async index(req, res) {
+
     var infos = await Informacoes.findAll()
+
     res.json(infos)
+
   }
 
   async indexName(req, res) {
+
     var NAME = req.body.NOME;
+
     var nameOne = await Informacoes.findByName(NAME)
- 
+
     if (nameOne == undefined) {
       res.status(404).json({})
     } else {
@@ -33,84 +38,89 @@ class InfosController {
 
   async create(req, res) {
     var { PRIMEIRONOME, ULTIMONOME, TELEFONE, EMAIL } = req.body;
-    console.log(  PRIMEIRONOME, ULTIMONOME, TELEFONE, EMAIL  )
-    
+   
     let fieldValidation = false
 
     if (PRIMEIRONOME == undefined || PRIMEIRONOME == "" || PRIMEIRONOME == " ") {
-      res.status(400).json({ err: "Informações invalidas" })
-    }else if (ULTIMONOME == undefined || ULTIMONOME == "" || ULTIMONOME == " ") {
-      res.status(400).json({ err: "Informações invalidas" })
-       }   else if (EMAIL == undefined || EMAIL == "" || EMAIL == " ") {
-        res.status(400).json({ err: "Informações invalidas"})
-         }  else  if (TELEFONE == undefined || TELEFONE == "" || TELEFONE == " ") {
-            res.status(400).json({ err: "Informações invalidas" })
-          }else{
-            fieldValidation = true
-          }
-        
-          if(fieldValidation){
-            await Informacoes.create(PRIMEIRONOME, ULTIMONOME, EMAIL)
+      res.status(400).json({ err: "Primeiro nome não inserido" })
+    } else if (ULTIMONOME == undefined || ULTIMONOME == "" || ULTIMONOME == " ") {
+      res.status(400).json({ err: "Ultimo nome não inserido" })
+    } else if (EMAIL == undefined || EMAIL == "" || EMAIL == " ") {
+      res.status(400).json({ err: "Email não inserido" })
+    } else if (TELEFONE == undefined || TELEFONE == "" || TELEFONE == " ") {
+      res.status(400).json({ err: "Telefone não inserido" })
+    } else {
 
-            await Telefone.create(TELEFONE,EMAIL)
-      
-            res.status(200).json({ res: "Dados Inserido com sucesso" })
-      
-          }
+      var result = await Telefones.findByPhone(TELEFONE)
 
-    
-    }
-
-
-
-    async update(req, res){
-
-      var { ID, PRIMEIRONOME, ULTIMONOME, EMAIL ,TELEFONE} = req.body;
-      
-      console.log( ID, PRIMEIRONOME, ULTIMONOME, EMAIL ,TELEFONE)
-      if (ID != undefined && ID > 0) {
-
-        var results = await Telefone.update(ID,TELEFONE)
-
-        var result = await Informacoes.update(ID, PRIMEIRONOME, ULTIMONOME, EMAIL,TELEFONE)
-
-        console.log(result,results)
-
-        if (result.stats && results.status) {
-
-          res.status(200).json({ msg: "Dados atualizados com sucesso" });
-          
-        } else if (results.status === false){
-          res.status(406).json({ err2: err })
-        }else{
-          res.status(406).json({ err: err })
-        }
+      if (result.status) {
+        res.status(400).json({ err: "Telefone já cadastrado" })
 
       } else {
-        res.status(406).json({ err: "Erro ao editar" })
+        fieldValidation = true
       }
+    }
+
+    if (fieldValidation) {
+
+      await Informacoes.create(PRIMEIRONOME, ULTIMONOME, EMAIL)
+
+      await Telefones.create(TELEFONE)
+
+      res.status(200).json({ res: "Dados Inserido com sucesso" })
 
     }
 
-    async delete (req, res){
 
-      var ID = req.body.ID;
-      console.log("Controller: ", ID)
-
-      var result = await Informacoes.delete(ID)
-      var results = await Telefone.deleteAll(ID)
+  }
 
 
-      if (result.stats && results.status) {
-        res.status(200).json({ msg: "Dados excluidos com sucesso" })
-      } else if(results.status === false) {
-        res.status(406).json({ msg: err2 })
-      }else{
-        res.status(406).json({ msg: err })
+
+  async update(req, res) {
+
+    var { ID, PRIMEIRONOME, ULTIMONOME, EMAIL, TELEFONE } = req.body;
+ 
+    if (ID != undefined && ID > 0) {
+
+      var resultPhone = await Telefone.update(ID, TELEFONE)
+
+      var resultInfos = await Informacoes.update(ID, PRIMEIRONOME, ULTIMONOME, EMAIL, TELEFONE)
+
+       if (resultInfos.stats && resultPhone.status) {
+
+        res.status(200).json({ msg: "Dados atualizados com sucesso" });
+
+      } else if (resultPhone.status == false) {
+        res.status(406).json({ err: err })
+      } else {
+        res.status(406).json({ err: err })
       }
-
+      
+    } else {
+      res.status(406).json({ err: "Erro ao editar" })
     }
 
   }
+
+  async delete(req, res) {
+
+    var ID = req.body.ID; 
+
+    var resultInfos = await Informacoes.delete(ID)
+   
+    var resultPhone = await Telefone.deleteAll(ID)
+
+
+    if (resultInfos.stats && results.status) {
+      res.status(200).json({ msg: "Dados excluidos com sucesso" })
+    } else if (resultPhone.status === false) {
+      res.status(406).json({ msg: err })
+    } else {
+      res.status(406).json({ msg: err })
+    }
+
+  }
+
+}
 
 module.exports = new InfosController()

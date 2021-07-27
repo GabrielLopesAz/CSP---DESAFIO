@@ -5,7 +5,7 @@ var InfosController = require("../controllers/infosController");
 var TelefonesController = require("../controllers/TelefoneController")
 
 router.get('/contato',InfosController.index);
-router.get('/contato/nome',InfosController.indexName);//ver como fazer a rota
+router.get('/contato/nome',InfosController.indexName); 
 router.get('/contato/email',InfosController.indexEmail);
 router.post('/contato',InfosController.create);
 router.put('/contato',InfosController.update);

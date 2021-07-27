@@ -2,7 +2,7 @@ const Knex = require("knex");
 const knex = require("../database/connection")
 
 class Telefone {
-// 
+ 
 async createFone(TELEFONE,FK_IDINFO){
   
   try{
@@ -12,40 +12,36 @@ async createFone(TELEFONE,FK_IDINFO){
       
      
   }catch(err){
-    console.log(err)
-    // return{ stats:false, err:err}
+    return { err:err} 
   } 
 }
 
-  async create(TELEFONE,EMAIL){
+  async create(TELEFONE ){
     
     try{
     
-      var FK_IDINFO = await knex.select('ID').from('informacoes').where({EMAIL:EMAIL})
-     let FK  =  FK_IDINFO[0]
-      // let fk3 = FK.TextRow.ID
-      let FK2 = Object.values(FK)
-      // knex.select('ID').from('informacoes').where({EMAIL:EMAIL})
-       
-      console.log(TELEFONE,FK2,FK )
-        await knex.insert({TELEFONE:TELEFONE,FK_IDINFO:FK2}).table('telefones')
-
+      let getRow = await knex.select('ID').from('telefones').where({FK_IDINFO:ID})
       
+      let getID  =  getRow[0] 
+      let FK_IDINFO = Object.values(getID) 
+
+        await knex.insert({TELEFONE:TELEFONE,FK_IDINFO:FK_IDINFO}).table('telefones')
     
     }catch(err){
-      console.log(err)
+      return { err:err}
     }
   }
   
   async findAll() {
     try {
+
       var result = await knex.select('*')
       .from('telefones') 
         
       return result 
        
     } catch (err) {
-      console.log(err)
+      return { err:err}
     }
   }
  
@@ -63,7 +59,7 @@ async createFone(TELEFONE,FK_IDINFO){
         return undefined
       }
     } catch (err) {
-      console.log(err)
+      return { err:err}
     }
   }
 
@@ -80,7 +76,7 @@ async createFone(TELEFONE,FK_IDINFO){
         return { status :false}
       }
     } catch (err) {
-      console.log(err)
+      return { err:err}
     }
   }
   
@@ -92,8 +88,7 @@ async createFone(TELEFONE,FK_IDINFO){
 
 
       let edit = {};
-      // console.log("UPDATE INFOS :",ID, PRIMEIRONOME, ULTIMONOME, EMAIL,Informacoes.ID, Informacoes.PRIMEIRONOME, Informacoes.ULTIMONOME, Informacoes.EMAIL)
-      if (TELEFONE != undefined && TELEFONE != '') {
+        if (TELEFONE != undefined && TELEFONE != '') {
         if (TELEFONE != Telefone.TELEFONE) {
           edit.TELEFONE = TELEFONE
         }
@@ -105,8 +100,7 @@ async createFone(TELEFONE,FK_IDINFO){
 
         return { stats: true }
 
-      } catch (err) {
-        console.log(err)
+      } catch (err) { 
         return { stats: false, err: err }
       }
 
@@ -118,12 +112,12 @@ async createFone(TELEFONE,FK_IDINFO){
 
  async update(ID,TELEFONE){
    
-  var FK_IDINFO = await knex.select('ID').from('telefones').where({FK_IDINFO:ID})
+  let getRow = await knex.select('ID').from('telefones').where({FK_IDINFO:ID})
       
-  let FK  =  FK_IDINFO[0] 
-  let FK2 = Object.values(FK)
+  let getID  =  getRow[0] 
+  let FK_IDINFO = Object.values(getID)
 
-  let id = await this.findById(FK2) 
+  let id = await this.findById(FK_IDINFO) 
 
   if(id != undefined){
     
@@ -135,15 +129,14 @@ async createFone(TELEFONE,FK_IDINFO){
           edit.TELEFONE = TELEFONE 
       
     } 
-    try{
+    try{ 
 
-      console.log("TEL MODEL:",FK2,TELEFONE)
       await knex.update(edit).where({ID:FK2}).table('telefones')
       
       return{status:true}
     
     }catch(err){
-      return{status:false, err2:err}
+      return{status:false, err:err}
     }
 
   }else{
@@ -154,14 +147,14 @@ async createFone(TELEFONE,FK_IDINFO){
 
  async deleteAll(ID){
  
-    try{
-      console.log("HI")
+    try{ 
+
       await knex.delete().where({FK_IDINFO:ID}).table('telefones')
       return{ status:true }
 
     }catch(err){
 
-      return { status: false, err2: err }
+      return { status: false, err: err }
 
     }
 

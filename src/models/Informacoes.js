@@ -9,12 +9,12 @@ class Informacoes {
     try {
 
       await knex.insert({ PRIMEIRONOME, ULTIMONOME, EMAIL })
-        .table('informacoes')
+                .table('informacoes')
 
 
 
     } catch (err) {
-      console.log(err)
+      return{err:err}
     }
   }
 
@@ -28,16 +28,11 @@ class Informacoes {
        FROM informacoes a
        LEFT JOIN telefones t on t.FK_IDINFO = a.ID
         `)
-
-      // knex.select(['a.PRIMEIRONOME AS Primeiro Nome,a.ULTIMONOME as Ultimo Nome,a.EMAIL as Email,t.TELEFONES as Telefone'])
-      // .from('informacoes','a')
-      // .leftJoin('telefones', 't', 't.FK_IDINFO', 'a.ID')
-      // .toSQL() 
-
-      return result
+ 
+      return result[0]
 
     } catch (err) {
-      console.log(err)
+      return {err: err}
     }
   }
 
@@ -54,11 +49,12 @@ class Informacoes {
         return undefined
       }
     } catch (err) {
-      console.log(err)
+      return {err: err}
     }
   }
 
   async findByName(NAME) {
+
     try {
 
       var result = await knex.raw(`
@@ -68,9 +64,7 @@ class Informacoes {
               t.TELEFONE as Telefone 
         FROM informacoes a 
         LEFT JOIN telefones t on t.FK_IDINFO = a.ID 
-        where (a.PRIMEIRONOME LIKE '${NAME}') OR (a.ULTIMONOME LIKE '${NAME}')`)
-
-      //  console.log(result)      
+        where (a.PRIMEIRONOME LIKE '${NAME}') OR (a.ULTIMONOME LIKE '${NAME}')`)    
 
       if (result.length > 0) {
         return result[0]
@@ -79,7 +73,7 @@ class Informacoes {
       }
 
     } catch (err) {
-      console.log(err)
+       return {err: err}
     }
 
   }
@@ -102,7 +96,7 @@ class Informacoes {
       }
 
     } catch (err) {
-      console.log(err)
+      return {err: err}
     }
 
   }
@@ -132,9 +126,6 @@ class Informacoes {
       }
 
       try {
-
-
-
 
         await knex.update(edit).where({ ID: ID }).table('informacoes')
 
