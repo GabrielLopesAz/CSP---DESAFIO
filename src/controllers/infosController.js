@@ -101,7 +101,7 @@ class InfosController {
     }
 
   }
-
+ 
   async delete(req, res) {
 
     var ID = req.body.ID; 
