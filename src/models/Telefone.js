@@ -51,7 +51,6 @@ async createFone(TELEFONE,FK_IDINFO){
       .from('telefones ') 
       .where({ID:ID});
       
-      console.log('FindById:', result)
 
       if (result.length > 0) {
         return result[0]
