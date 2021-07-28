@@ -82,7 +82,7 @@ class InfosController {
  
     if (ID != undefined && ID > 0) {
 
-      var resultPhone = await Telefone.update(ID, TELEFONE)
+      var resultPhone = await Telefones.update(ID, TELEFONE)
 
       var resultInfos = await Informacoes.update(ID, PRIMEIRONOME, ULTIMONOME, EMAIL, TELEFONE)
 
@@ -108,7 +108,7 @@ class InfosController {
 
     var resultInfos = await Informacoes.delete(ID)
    
-    var resultPhone = await Telefone.deleteAll(ID)
+    var resultPhone = await Telefones.deleteAll(ID)
 
 
     if (resultInfos.stats && results.status) {
