@@ -30,7 +30,7 @@ node index.js or nodemon index.js
 ```
  
 ## Documentação
-[Documentação da api](https://nodejs.org/) para análise.
+[Documentação da api](https://www.getpostman.com/collections/bc4eb3493da98f0f2a68) para análise.
 
 
 ## Extras
