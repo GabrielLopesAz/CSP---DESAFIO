@@ -91,9 +91,9 @@ class InfosController {
         res.status(200).json({ msg: "Dados atualizados com sucesso" });
 
       } else if (resultPhone.status == false) {
-        res.status(406).json({ err: err })
+        res.status(406).json({ err: 'Informações invalidas para atualizar' })
       } else {
-        res.status(406).json({ err: err })
+        res.status(406).json({ err: 'Telefone invalido para atualizar' })
       }
       
     } else {
